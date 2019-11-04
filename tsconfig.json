@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "ES2017",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "strict": true,
+    "rootDir": ".",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "paths": {
+      "src/*": ["src/*"]
+    }
+  }
+}
