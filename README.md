@@ -1,6 +1,6 @@
 # walrus.ai
 
-*walrus* is the command line tool for [walrus.ai](https://walrus.ai).
+**walrus** is the command line tool for [walrus.ai](https://walrus.ai).
 
 ## Installation
 
