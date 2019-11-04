@@ -12,7 +12,7 @@ const args = yargs.options({
   instructions: { type: 'array', demandOption: true, alias: 'i' },
 }).argv;
 
-const spinner = ora(`Running test on ${args.instructions}`).start();
+const spinner = ora(`Running test on ${args.url}`).start();
 
 axios
   .post(

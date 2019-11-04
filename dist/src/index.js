@@ -13,7 +13,7 @@ const args = yargs_1.default.options({
     url: { type: 'string', demandOption: true, alias: 'u' },
     instructions: { type: 'array', demandOption: true, alias: 'i' },
 }).argv;
-const spinner = ora_1.default(`Running test on ${args.instructions}`).start();
+const spinner = ora_1.default(`Running test on ${args.url}`).start();
 axios_1.default
     .post(WALRUS_API, { url: args['url'], instructions: args['instructions'] }, {
     headers: { 'X-Walrus-Token': args['api-key'] },
