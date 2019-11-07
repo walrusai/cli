@@ -3,35 +3,90 @@
 import yargs from 'yargs';
 import axios from 'axios';
 import ora from 'ora';
+import fs from 'fs';
+import glob from 'glob';
+import yaml from 'js-yaml';
+import chalk from 'chalk';
 
 const WALRUS_API = 'https://api.walrus.ai';
 
-const args = yargs.options({
-  'api-key': { type: 'string', demandOption: true, alias: 'a' },
-  url: { type: 'string', demandOption: true, alias: 'u' },
-  instructions: { type: 'array', demandOption: true, alias: 'i' },
-}).argv;
+const runTests = async (tests: { url: string, instructions: string[] }[]): Promise<void> => {
+  const message = `Running ${tests.length} test${tests.length > 1 ? 's' : ''}`;
+  const spinner = ora(message).start();
+  const executions = tests.map(async (test) => {
+    try {
+      const response = await axios.post(WALRUS_API, { url: test.url, instructions: test.instructions }, {
+        headers: { 'X-Walrus-Token': args['api-key'] },
+      });
+      return response.data;
+    }
+    catch (error) {
+      return error.response.data;
+    }
+  })
 
-const spinner = ora(`Running test on ${args.url}`).start();
-
-axios
-  .post(
-    WALRUS_API,
-    { url: args['url'], instructions: args['instructions'] },
-    {
-      headers: { 'X-Walrus-Token': args['api-key'] },
-    },
-  )
-  .then(
-    (response) => {
+  Promise.all(executions).then(
+    (values) => {
       spinner.stop();
 
-      console.log(JSON.stringify(response.data, null, 2));
-    },
-    (reason) => {
-      spinner.stop();
+      const successes = values.filter((value) => value.success);
+      const failures = values.filter((value) => !value.success);
 
-      console.log(JSON.stringify(reason.response.data, null, 2));
-      process.exitCode = 1;
-    },
+      if (successes.length > 0) {
+        const message = chalk.green(`Successes: ${successes.length}`);
+        console.log(message);
+        successes.forEach((value) => console.log(value));
+      }
+
+      if (failures.length > 0) {
+        const message = chalk.red(`Failures: ${failures.length}`);
+        console.log(message);
+        failures.forEach((value) => console.log(value));
+      }
+    }
   );
+};
+
+const parseFileToTest = (fileName: string): { url: string, instructions: string[] } => {
+  const doc = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
+
+  if (!doc.url) {
+    throw new Error(`'url' is required in file ${fileName}`);
+  }
+
+  if (!doc.instructions || doc.instructions.length === 0) {
+    throw new Error(`'instructions' are required in file ${fileName}`);
+  }
+
+  return { url: doc.url, instructions: doc.instructions };
+};
+
+const args = yargs
+  .options({
+    'api-key': { type: 'string', demandOption: true, alias: 'a' },
+    'url': { type: 'string', demandOption: false, alias: 'u' },
+    'instructions': { type: 'array', demandOption: false, alias: 'i' },
+    'file': { type: 'string', demandOption: false, alias: 'f' },
+  })
+  .check((argv) => {
+    if (!argv.file && !(argv.instructions && argv.url)) {
+      throw new Error('You must specify either a file or a directory of tests OR an inline url with instructions');
+    }
+
+    return true;
+  })
+  .argv;
+
+if (args['file'] && fs.lstatSync(args['file']).isDirectory()) {
+  glob('/**/*.yml', { root: args['file'] }, (_, matches) => {
+    try {
+      runTests(matches.map(parseFileToTest));
+    } catch(e) { console.log(e.message); }
+  });
+} else if (args['file']) {
+  try {
+    runTests([parseFileToTest(args['file'])]);
+  } catch(e) { console.log(e.message); }
+} else {
+  runTests([{ url: args['url']!, instructions: (args['instructions'] as any) }])
+}

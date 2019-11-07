@@ -11,9 +11,14 @@
   "author": "Akshay Nathan",
   "license": "MIT",
   "dependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/js-yaml": "^3.12.1",
     "@types/node": "^12.12.5",
     "@types/yargs": "^13.0.3",
     "axios": "^0.19.0",
+    "chalk": "^2.4.2",
+    "glob": "^7.1.6",
+    "js-yaml": "^3.13.1",
     "ora": "^4.0.2",
     "typescript": "^3.6.4",
     "yargs": "^14.2.0"
