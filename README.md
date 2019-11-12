@@ -15,20 +15,23 @@ npm install -g @walrusai/cli
 Once you install **walrus**, you are ready to run your first test. You will need an API key, the url to a web application you want to test, and a list of plain english test instructions. You can get an API key for free by signing up [here](https://app.walrus.ai/login).
 
 ```bash
-walrus -u https://amazon.com -a YOUR_API_KEY -i \
-  Login \
-  Add an item to your cart \
-  Make sure the item is in your cart
+walrus -n 'test-name' -u https://amazon.com -a YOUR_API_KEY -i \
+  'Login' \
+  'Add an item to your cart' \
+  'Make sure the item is in your cart'
 ```
 
 ## Configuration
 
 Generally, each walrus.ai test requires an url, and instructions. These can be specified in line (as in the example above), or as files.
 
+You can optionally provide a test name.
+
 Files are written in YAML as per the example below:
 
 ```yaml
 ---
+name: 'test-name'
 url: https://amazon.com
 instructions:
   - Login
