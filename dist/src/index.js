@@ -17,13 +17,13 @@ const runTests = async (tests) => {
     const spinner = ora_1.default(message).start();
     const executions = tests.map(async (test) => {
         try {
-            const response = await axios_1.default.post(WALRUS_API, { url: test.url, instructions: test.instructions }, {
+            const response = await axios_1.default.post(WALRUS_API, { name: test.name, url: test.url, instructions: test.instructions }, {
                 headers: { 'X-Walrus-Token': args['api-key'] },
             });
-            return response.data;
+            return Object.assign(Object.assign({}, (test.name ? { name: test.name } : {})), response.data);
         }
         catch (error) {
-            return error.response.data;
+            return Object.assign(Object.assign({}, (test.name ? { name: test.name } : {})), error.response.data);
         }
     });
     Promise.all(executions).then((values) => {
@@ -50,12 +50,13 @@ const parseFileToTest = (fileName) => {
     if (!doc.instructions || doc.instructions.length === 0) {
         throw new Error(`'instructions' are required in file ${fileName}`);
     }
-    return { url: doc.url, instructions: doc.instructions };
+    return { name: doc.name, url: doc.url, instructions: doc.instructions };
 };
 const args = yargs_1.default
     .options({
     'api-key': { type: 'string', demandOption: true, alias: 'a' },
     'url': { type: 'string', demandOption: false, alias: 'u' },
+    'name': { type: 'string', demandOption: false, alias: 'n' },
     'instructions': { type: 'array', demandOption: false, alias: 'i' },
     'file': { type: 'string', demandOption: false, alias: 'f' },
 })
@@ -85,5 +86,5 @@ else if (args['file']) {
     }
 }
 else {
-    runTests([{ url: args['url'], instructions: args['instructions'] }]);
+    runTests([{ name: args['name'], url: args['url'], instructions: args['instructions'] }]);
 }
