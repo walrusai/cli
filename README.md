@@ -25,18 +25,21 @@ walrus -n 'test-name' -u https://amazon.com -a YOUR_API_KEY -i \
 
 Generally, each walrus.ai test requires an url, and instructions. These can be specified in line (as in the example above), or as files.
 
-You can optionally provide a test name.
+You can optionally provide a test name, and variables which are interpolated into the instructions.
 
 Files are written in YAML as per the example below:
 
 ```yaml
 ---
 name: 'test-name'
-url: https://amazon.com
+url: 'https://amazon.com'
 instructions:
-  - Login
-  - Add an item to your cart
-  - Make sure the item is in your cart
+  - 'Login with :username: and :password:'
+  - 'Add an item to your cart'
+  - 'Make sure the item is in your cart'
+variables:
+  username: 'walrus@walrus.ai'
+  password: 'hunter2'
 ```
 
 You can then specify either a single test to the walrus program, or a directory of tests.

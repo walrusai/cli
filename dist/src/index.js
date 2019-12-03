@@ -17,9 +17,7 @@ const runTests = async (tests) => {
     const spinner = ora_1.default(message).start();
     const executions = tests.map(async (test) => {
         try {
-            const response = await axios_1.default.post(WALRUS_API, { name: test.name, url: test.url, instructions: test.instructions }, {
-                headers: { 'X-Walrus-Token': args['api-key'] },
-            });
+            const response = await axios_1.default.post(WALRUS_API, test, { headers: { 'X-Walrus-Token': args['api-key'] } });
             return Object.assign(Object.assign({}, (test.name ? { name: test.name } : {})), response.data);
         }
         catch (error) {
@@ -50,7 +48,7 @@ const parseFileToTest = (fileName) => {
     if (!doc.instructions || doc.instructions.length === 0) {
         throw new Error(`'instructions' are required in file ${fileName}`);
     }
-    return { name: doc.name, url: doc.url, instructions: doc.instructions };
+    return { name: doc.name, url: doc.url, instructions: doc.instructions, variables: doc.variables };
 };
 const args = yargs_1.default
     .options({

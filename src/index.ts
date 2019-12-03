@@ -10,14 +10,19 @@ import chalk from 'chalk';
 
 const WALRUS_API = 'https://api.walrus.ai';
 
-const runTests = async (tests: { name?: string, url: string, instructions: string[] }[]): Promise<void> => {
+type IntegrationTest = {
+  name?: string,
+  url: string,
+  instructions: string[],
+  variables?: { [key: string]: string },
+};
+
+const runTests = async (tests: IntegrationTest[]): Promise<void> => {
   const message = `Running ${tests.length} test${tests.length > 1 ? 's' : ''}`;
   const spinner = ora(message).start();
   const executions = tests.map(async (test) => {
     try {
-      const response = await axios.post(WALRUS_API, { name: test.name, url: test.url, instructions: test.instructions }, {
-        headers: { 'X-Walrus-Token': args['api-key'] },
-      });
+      const response = await axios.post(WALRUS_API, test, { headers: { 'X-Walrus-Token': args['api-key'] } });
       return { ...(test.name ? { name: test.name } : {}), ...response.data };
     }
     catch (error) {
@@ -47,7 +52,7 @@ const runTests = async (tests: { name?: string, url: string, instructions: strin
   );
 };
 
-const parseFileToTest = (fileName: string): { name?: string, url: string, instructions: string[] } => {
+const parseFileToTest = (fileName: string): IntegrationTest => {
   const doc = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
 
   if (!doc.url) {
@@ -58,7 +63,7 @@ const parseFileToTest = (fileName: string): { name?: string, url: string, instru
     throw new Error(`'instructions' are required in file ${fileName}`);
   }
 
-  return { name: doc.name, url: doc.url, instructions: doc.instructions };
+  return { name: doc.name, url: doc.url, instructions: doc.instructions, variables: doc.variables };
 };
 
 const args = yargs
