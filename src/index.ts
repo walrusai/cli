@@ -38,14 +38,14 @@ const runTests = async (tests: IntegrationTest[]): Promise<void> => {
       const failures = values.filter((value) => !value.success);
 
       if (successes.length > 0) {
-        const message = chalk.green(`Successes: ${successes.length}`);
-        console.log(message);
+        console.log(chalk.green(`Successes: ${successes.length}`));
         successes.forEach((value) => console.log(value));
       }
 
       if (failures.length > 0) {
-        const message = chalk.red(`Failures: ${failures.length}`);
-        console.log(message);
+        process.exitCode = 1;
+
+        console.log(chalk.red(`Failures: ${failures.length}`));
         failures.forEach((value) => console.log(value));
       }
     }
