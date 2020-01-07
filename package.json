@@ -1,6 +1,6 @@
 {
   "name": "@walrusai/cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "walrus.ai command line tool",
   "scripts": {
     "prepublishOnly": "npx tsc"

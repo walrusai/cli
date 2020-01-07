@@ -9,7 +9,7 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "paths": {
-      "src/*": ["src/*"]
+      "src/*": ["./src/*"]
     }
   }
 }

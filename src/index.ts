@@ -5,19 +5,13 @@ import axios from 'axios';
 import ora from 'ora';
 import fs from 'fs';
 import glob from 'glob';
-import yaml from 'js-yaml';
 import chalk from 'chalk';
+import * as parser from './parser';
+import { WalrusTest } from './walrus_test';
 
 const WALRUS_API = 'https://api.walrus.ai';
 
-type IntegrationTest = {
-  name?: string,
-  url: string,
-  instructions: string[],
-  variables?: { [key: string]: string },
-};
-
-const runTests = async (tests: IntegrationTest[]): Promise<void> => {
+const runTests = async (tests: WalrusTest[]): Promise<void> => {
   const message = `Running ${tests.length} test${tests.length > 1 ? 's' : ''}`;
   const spinner = ora(message).start();
   const executions = tests.map(async (test) => {
@@ -52,20 +46,6 @@ const runTests = async (tests: IntegrationTest[]): Promise<void> => {
   );
 };
 
-const parseFileToTest = (fileName: string): IntegrationTest => {
-  const doc = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
-
-  if (!doc.url) {
-    throw new Error(`'url' is required in file ${fileName}`);
-  }
-
-  if (!doc.instructions || doc.instructions.length === 0) {
-    throw new Error(`'instructions' are required in file ${fileName}`);
-  }
-
-  return { name: doc.name, url: doc.url, instructions: doc.instructions, variables: doc.variables };
-};
-
 const args = yargs
   .options({
     'api-key': { type: 'string', demandOption: true, alias: 'a' },
@@ -86,12 +66,12 @@ const args = yargs
 if (args['file'] && fs.lstatSync(args['file']).isDirectory()) {
   glob('/**/*.yml', { root: args['file'] }, (_, matches) => {
     try {
-      runTests(matches.map(parseFileToTest));
+      runTests(matches.map(parser.parseFile));
     } catch(e) { console.log(e.message); }
   });
 } else if (args['file']) {
   try {
-    runTests([parseFileToTest(args['file'])]);
+    runTests([parser.parseFile(args['file'])]);
   } catch(e) { console.log(e.message); }
 } else {
   runTests([{ name: args['name'], url: args['url']!, instructions: (args['instructions'] as any) }])
