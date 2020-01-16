@@ -65,7 +65,7 @@ export async function runTests(
               success: false,
               error: `Walrus Test ${test.gid} timed out.`
             });
-          }, 60000);
+          }, 3600000);
         });
       }
     )
