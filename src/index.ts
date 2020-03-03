@@ -33,8 +33,8 @@ if (args.verbose) {
   logger.transports[0].level = 'info';
 }
 
-if (args['file'] && fs.lstatSync(args['file']).isDirectory()) {
-  glob('/**/*.yml', { root: args['file'] }, (_, matches) => {
+if (args.file && fs.lstatSync(args.file).isDirectory()) {
+  glob('/**/*.yml', { root: args.file }, (_, matches) => {
     try {
       reportTests(matches.map(parser.parseFile), tests =>
         runTests(tests, args['api-key'])
@@ -43,9 +43,9 @@ if (args['file'] && fs.lstatSync(args['file']).isDirectory()) {
       logger.error(e.message);
     }
   });
-} else if (args['file']) {
+} else if (args.file) {
   try {
-    reportTests([parser.parseFile(args['file'])], tests =>
+    reportTests([parser.parseFile(args.file)], tests =>
       runTests(tests, args['api-key'])
     );
   } catch (e) {
@@ -57,9 +57,9 @@ if (args['file'] && fs.lstatSync(args['file']).isDirectory()) {
       {
         name: args.name!,
         url: args.url!,
-        instructions: args['instructions'] as string[],
+        instructions: args.instructions as string[],
       }
     ],
-    tests => runTests(tests, args['api-key'])
+    (tests) => runTests(tests, args['api-key'])
   );
 }
