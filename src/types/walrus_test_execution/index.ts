@@ -3,4 +3,4 @@ export interface WalrusTestExecution {
   name: string;
   error?: string;
   data?: { video: string };
-};
+}

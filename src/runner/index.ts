@@ -1,16 +1,18 @@
-import axios from "axios";
-import { WalrusTest } from "src/types/walrus_test";
-import { WalrusTestExecution } from "src/types/walrus_test_execution";
-import logger from "../logger";
+import axios from 'axios';
+import { WalrusTest } from 'src/types/walrus_test';
+import { WalrusTestExecution } from 'src/types/walrus_test_execution';
+import logger from '../logger';
 
-const WALRUS_API = "https://api.walrus.ai";
+const WALRUS_API = 'https://api.walrus.ai';
 
 async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTestExecution> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
+    let timeout!: NodeJS.Timeout; // eslint-disable-line prefer-const
+
     const interval = setInterval(async () => {
       try {
         const response = await axios.get(`${WALRUS_API}/${test.gid}`, {
-          headers: { "X-Walrus-Token": authToken },
+          headers: { 'X-Walrus-Token': authToken },
         });
 
         if (response.status === 202) {
@@ -30,7 +32,7 @@ async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTest
       }
     }, 5000);
 
-    const timeout = setTimeout(() => {
+    timeout = setTimeout(() => {
       clearInterval(interval);
       resolve({
         name: test.name!,
@@ -47,7 +49,8 @@ export async function runTests(
 ): Promise<WalrusTestExecution[]> {
   return await Promise.all(tests.map(async (test) => {
     try {
-      const result = await axios.post(WALRUS_API, { ...test, options: { mode: "poll" } }, { headers: { "X-Walrus-Token": authToken } });
+      const result = await axios.post(WALRUS_API, { ...test, options: { mode: 'poll' } }, { headers: { 'X-Walrus-Token': authToken } });
+
       return await pollTest({ ...test, gid: result.data.data.gid, state: result.data.data.state }, authToken);
     } catch (e) {
       let error = e.message;
@@ -56,7 +59,7 @@ export async function runTests(
         error = e.response.data.error;
       }
 
-      return { name: test.name, success: false, error: error };
+      return { name: test.name, success: false, error };
     }
   }));
 }

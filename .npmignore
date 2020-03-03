@@ -1,2 +1,6 @@
-src/
+.eslintrc
+.prettierrc
+.prettierignore
 tsconfig.json
+hooks/
+src/

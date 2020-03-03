@@ -1,9 +1,9 @@
-import fs from "fs";
-import yaml from "js-yaml";
-import { WalrusTest } from "src/types/walrus_test";
+import fs from 'fs';
+import yaml from 'js-yaml';
+import { WalrusTest } from 'src/types/walrus_test';
 
 export function parseFile(fileName: string): WalrusTest {
-  const doc = yaml.safeLoad(fs.readFileSync(fileName, "utf8"));
+  const doc = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
 
   if (!doc.name) {
     throw new Error(`${fileName}: 'name' is a required field.`);
@@ -25,11 +25,11 @@ export function parseFile(fileName: string): WalrusTest {
     for (const key of Object.keys(doc.variables)) {
       const value = doc.variables[key];
 
-      if (!(typeof value === "string")) {
+      if (!(typeof value === 'string')) {
         throw new Error(`${fileName}: invalid variable format - ${key}.`);
       }
 
-      if (value.charAt(0) === "$") {
+      if (value.charAt(0) === '$') {
         const env = process.env[value.substring(1)];
 
         if (!env) {
@@ -49,6 +49,6 @@ export function parseFile(fileName: string): WalrusTest {
     name: doc.name,
     url: doc.url,
     instructions: doc.instructions,
-    variables: variables
+    variables,
   };
 }
