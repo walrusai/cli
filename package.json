@@ -6,7 +6,8 @@
     "lint": "tsc --noEmit --skipLibCheck && eslint '**/*.{ts,tsx}' --cache",
     "test": "NODE_ENV=test npm run lint && jest",
     "test:file": "NODE_ENV=test jest --watch",
-    "prepublishOnly": "npx tsc"
+    "build": "npx tsc",
+    "prepublishOnly": "NODE_ENV=production npm run build"
   },
   "bin": {
     "walrus": "dist/src/index.js"
