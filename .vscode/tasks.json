@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test-file",
+      "command": "npm run test:file ${file}",
+      "type": "shell",
+      "options": {
+        "cwd": "${fileDirname}"
+      }
+    }
+  ]
+}

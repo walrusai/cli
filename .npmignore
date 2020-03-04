@@ -3,4 +3,5 @@
 .prettierignore
 tsconfig.json
 hooks/
+fixtures/
 src/

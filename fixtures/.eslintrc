@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "sort-keys": [2, "asc", { "caseSensitive": false }]
+  }
+}
