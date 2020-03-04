@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { WalrusTest } from 'src/types/walrus_test';
-import { WalrusTestExecution } from 'src/types/walrus_test_execution';
-import logger from 'src/logger';
+import { WalrusTest } from '../types/walrus_test';
+import { WalrusTestExecution } from '../types/walrus_test_execution';
+import logger from '../logger';
 
 const WALRUS_API = 'https://api.walrus.ai';
 const POLL_INTERVAL_MS = 5 * 1000;

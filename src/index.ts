@@ -3,10 +3,10 @@
 import yargs from 'yargs';
 import fs from 'fs';
 import glob from 'glob';
-import logger from 'src/logger';
-import { parseFile } from 'src/parser';
-import { runTests } from 'src/runner';
-import { reportTests } from 'src/reporter';
+import logger from './logger';
+import { parseFile } from './parser';
+import { runTests } from './runner';
+import { reportTests } from './reporter';
 
 const args = yargs
   .options({

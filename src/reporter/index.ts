@@ -1,8 +1,8 @@
 import ora from 'ora';
 import chalk from 'chalk';
-import { WalrusTest } from 'src/types/walrus_test';
-import { WalrusTestExecution } from 'src/types/walrus_test_execution';
-import logger from 'src/logger';
+import { WalrusTest } from '../types/walrus_test';
+import { WalrusTestExecution } from '../types/walrus_test_execution';
+import logger from '../logger';
 
 export async function reportTests(
   tests: WalrusTest[],
