@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { WalrusTest } from 'src/types/walrus_test';
-import { WalrusTestExecution } from 'src/types/walrus_test_execution';
+import { WalrusTest } from '../types/walrus_test';
+import { WalrusTestExecution } from '../types/walrus_test_execution';
 import logger from '../logger';
 
 const WALRUS_API = 'https://api.walrus.ai';
+const POLL_INTERVAL_MS = 5 * 1000;
+const TEST_TIMEOUT_MS = 60 * 60 * 1000;
 
 async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTestExecution> {
   return new Promise((resolve) => {
@@ -30,16 +32,16 @@ async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTest
       } catch (e) {
         logger.warn(`Polling Walrus Test ${test.gid} failed: ${e}`);
       }
-    }, 5000);
+    }, POLL_INTERVAL_MS);
 
     timeout = setTimeout(() => {
       clearInterval(interval);
       resolve({
         name: test.name!,
         success: false,
-        error: `Walrus Test ${test.gid} timed out.`
+        error: `Walrus Test ${test.gid} timed out.`,
       });
-    }, 3600000);
+    }, TEST_TIMEOUT_MS);
   });
 }
 

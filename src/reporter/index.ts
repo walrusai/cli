@@ -1,15 +1,14 @@
 import ora from 'ora';
 import chalk from 'chalk';
+import { WalrusTest } from '../types/walrus_test';
+import { WalrusTestExecution } from '../types/walrus_test_execution';
 import logger from '../logger';
-import { WalrusTest } from 'src/types/walrus_test';
-import { WalrusTestExecution } from 'src/types/walrus_test_execution';
 
-export default async function reportTests(
+export async function reportTests(
   tests: WalrusTest[],
   runner: (tests: WalrusTest[]) => Promise<WalrusTestExecution[]>
 ): Promise<boolean> {
   const message = `Running ${tests.length} test${tests.length > 1 ? 's' : ''}`;
-
   let spinner;
 
   if (logger.transports[0].level === 'info') {

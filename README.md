@@ -1,5 +1,7 @@
 # @walrusai/cli
 
+[![npm version](https://badge.fury.io/js/%40walrusai%2Fcli.svg)](https://badge.fury.io/js/%40walrusai%2Fcli)
+
 The command line tool for [walrus.ai](https://walrus.ai).
 
 [Full Documentation](https://docs.walrus.ai)

@@ -3,10 +3,10 @@
 import yargs from 'yargs';
 import fs from 'fs';
 import glob from 'glob';
-import * as parser from './parser';
-import { runTests } from './runner';
-import reportTests from './reporter';
 import logger from './logger';
+import { parseFile } from './parser';
+import { runTests } from './runner';
+import { reportTests } from './reporter';
 
 const args = yargs
   .options({
@@ -15,9 +15,9 @@ const args = yargs
     name: { type: 'string', demandOption: false, alias: 'n' },
     instructions: { type: 'array', demandOption: false, alias: 'i' },
     file: { type: 'string', demandOption: false, alias: 'f' },
-    verbose: { type: 'boolean', demandOption: false, alias: 'v' }
+    verbose: { type: 'boolean', demandOption: false, alias: 'v' },
   })
-  .check(argv => {
+  .check((argv) => {
     if (!argv.file && !(argv.instructions && argv.url)) {
       throw new Error(
         'You must specify either a file or a directory of tests OR an inline name, url and instructions'
@@ -34,23 +34,33 @@ if (args.verbose) {
 }
 
 if (args.file && fs.lstatSync(args.file).isDirectory()) {
-  glob('/**/*.yml', { root: args.file }, (_, matches) => {
+  glob('/**/*.{yml,yaml}', { root: args.file }, (_, matches) => {
     try {
-      reportTests(matches.map(parser.parseFile), tests =>
+      reportTests(matches.map(parseFile), (tests) =>
         runTests(tests, args['api-key'])
       );
     } catch (e) {
       logger.error(e.message);
     }
   });
-} else if (args.file) {
+} else if (args.file && fs.lstatSync(args.file).isFile()) {
   try {
-    reportTests([parser.parseFile(args.file)], tests =>
+    reportTests([parseFile(args.file)], (tests) =>
       runTests(tests, args['api-key'])
     );
   } catch (e) {
     logger.error(e.message);
   }
+} else if (args.file) {
+  glob(args.file, { root: process.cwd() }, (_, matches) => {
+    try {
+      reportTests(matches.map(parseFile), (tests) =>
+        runTests(tests, args['api-key'])
+      );
+    } catch (e) {
+      logger.error(e.message);
+    }
+  });
 } else {
   reportTests(
     [

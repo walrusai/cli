@@ -1,6 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import { WalrusTest } from 'src/types/walrus_test';
+import { WalrusTest } from '../types/walrus_test';
 
 export function parseFile(fileName: string): WalrusTest {
   const doc = yaml.safeLoad(fs.readFileSync(fileName, 'utf8'));
