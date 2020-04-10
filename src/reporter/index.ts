@@ -38,5 +38,9 @@ export async function reportTests(
     logger.info('%o', execution);
   }
 
+  if (failures.length !== 0) {
+    process.exitCode = 1;
+  }
+
   return failures.length === 0;
 }

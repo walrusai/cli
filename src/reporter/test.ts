@@ -16,29 +16,63 @@ describe('src/reporter', () => {
     let tests: WalrusTest[];
     let runner: (tests: WalrusTest[]) => Promise<WalrusTestExecution[]>;
 
-    beforeEach(() => {
-      oraStartMock = jest.fn();
-
-      tests = [walrusTestFixture({ state: 'completed' }), walrusTestFixture({ state: 'completed' })];
-      runner = jest.fn().mockResolvedValue([walrusTestExecutionFixture(), walrusTestExecutionFixture({ success: false, error: 'error' })]);
-
-      logger.transports[0].level = 'info';
-      logger.info = jest.fn();
+    afterEach(() => {
+      process.exitCode = 0;
     });
 
-    it('should properly report tests', async () => {
-      await reporter.reportTests(tests, runner);
+    describe('mixed', () => {
+      beforeEach(() => {
+        oraStartMock = jest.fn();
 
-      expect(oraStartMock).toHaveBeenCalledTimes(1);
+        tests = [walrusTestFixture({ state: 'completed' }), walrusTestFixture({ state: 'completed' })];
+        runner = jest.fn().mockResolvedValue([walrusTestExecutionFixture(), walrusTestExecutionFixture({ success: false, error: 'error' })]);
 
-      expect(runner).toHaveBeenCalledTimes(1);
-      expect(runner).toHaveBeenCalledWith(tests);
+        logger.transports[0].level = 'info';
+        logger.info = jest.fn();
+      });
 
-      expect(logger.info).toHaveBeenCalledTimes(4);
-      expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Successes: 1'));
-      expect(logger.info).toHaveBeenCalledWith('%o', expect.objectContaining({ success: true }));
-      expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Failures: 1'));
-      expect(logger.info).toHaveBeenCalledWith('%o', expect.objectContaining({ success: false }));
+      it('should properly report tests', async () => {
+        await reporter.reportTests(tests, runner);
+
+        expect(oraStartMock).toHaveBeenCalledTimes(1);
+
+        expect(runner).toHaveBeenCalledTimes(1);
+        expect(runner).toHaveBeenCalledWith(tests);
+
+        expect(logger.info).toHaveBeenCalledTimes(4);
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Successes: 1'));
+        expect(logger.info).toHaveBeenCalledWith('%o', expect.objectContaining({ success: true }));
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Failures: 1'));
+        expect(logger.info).toHaveBeenCalledWith('%o', expect.objectContaining({ success: false }));
+        expect(process.exitCode).toEqual(1);
+      });
+    });
+
+    describe('all passes', () => {
+      beforeEach(() => {
+        oraStartMock = jest.fn();
+
+        tests = [walrusTestFixture({ state: 'completed' }), walrusTestFixture({ state: 'completed' })];
+        runner = jest.fn().mockResolvedValue([walrusTestExecutionFixture(), walrusTestExecutionFixture()]);
+
+        logger.transports[0].level = 'info';
+        logger.info = jest.fn();
+      });
+
+      it('should properly report tests', async () => {
+        await reporter.reportTests(tests, runner);
+
+        expect(oraStartMock).toHaveBeenCalledTimes(1);
+
+        expect(runner).toHaveBeenCalledTimes(1);
+        expect(runner).toHaveBeenCalledWith(tests);
+
+        expect(logger.info).toHaveBeenCalledTimes(4);
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Successes: 2'));
+        expect(logger.info).toHaveBeenCalledWith('%o', expect.objectContaining({ success: true }));
+        expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Failures: 0'));
+        expect(process.exitCode).toEqual(0);
+      });
     });
   });
 });
