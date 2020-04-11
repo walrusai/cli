@@ -47,11 +47,12 @@ async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTest
 
 export async function runTests(
   tests: WalrusTest[],
-  authToken: string
+  authToken: string,
+  revision?: string,
 ): Promise<WalrusTestExecution[]> {
   return await Promise.all(tests.map(async (test) => {
     try {
-      const result = await axios.post(WALRUS_API, { ...test, options: { mode: 'poll' } }, { headers: { 'X-Walrus-Token': authToken } });
+      const result = await axios.post(WALRUS_API, { ...test, revision, options: { mode: 'poll' } }, { headers: { 'X-Walrus-Token': authToken } });
 
       return await pollTest({ ...test, gid: result.data.data.gid, state: result.data.data.state }, authToken);
     } catch (e) {

@@ -13,6 +13,7 @@ const args = yargs
     'api-key': { type: 'string', demandOption: true, alias: 'a' },
     url: { type: 'string', demandOption: false, alias: 'u' },
     name: { type: 'string', demandOption: false, alias: 'n' },
+    revision: { type: 'string', demandOption: false, alias: 'r' },
     instructions: { type: 'array', demandOption: false, alias: 'i' },
     file: { type: 'string', demandOption: false, alias: 'f' },
     verbose: { type: 'boolean', demandOption: false, alias: 'v' },
@@ -37,7 +38,7 @@ if (args.file && fs.lstatSync(args.file).isDirectory()) {
   glob('/**/*.{yml,yaml}', { root: args.file }, (_, matches) => {
     try {
       reportTests(matches.map(parseFile), (tests) =>
-        runTests(tests, args['api-key'])
+        runTests(tests, args['api-key'], args.revision)
       );
     } catch (e) {
       logger.error(e.message);
@@ -46,7 +47,7 @@ if (args.file && fs.lstatSync(args.file).isDirectory()) {
 } else if (args.file && fs.lstatSync(args.file).isFile()) {
   try {
     reportTests([parseFile(args.file)], (tests) =>
-      runTests(tests, args['api-key'])
+      runTests(tests, args['api-key'], args.revision)
     );
   } catch (e) {
     logger.error(e.message);
@@ -55,7 +56,7 @@ if (args.file && fs.lstatSync(args.file).isDirectory()) {
   glob(args.file, { root: process.cwd() }, (_, matches) => {
     try {
       reportTests(matches.map(parseFile), (tests) =>
-        runTests(tests, args['api-key'])
+        runTests(tests, args['api-key'], args.revision)
       );
     } catch (e) {
       logger.error(e.message);
@@ -70,6 +71,6 @@ if (args.file && fs.lstatSync(args.file).isDirectory()) {
         instructions: args.instructions as string[],
       }
     ],
-    (tests) => runTests(tests, args['api-key'])
+    (tests) => runTests(tests, args['api-key'], args.revision)
   );
 }

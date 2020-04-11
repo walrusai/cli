@@ -6,5 +6,6 @@ export interface WalrusTest {
   variables?: Record<string, string>;
   state?: 'pending' | 'completed';
   error?: string;
+  revision?: string;
   video?: string;
 }
