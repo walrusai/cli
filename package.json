@@ -1,6 +1,6 @@
 {
   "name": "@walrusai/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "walrus.ai command line tool",
   "scripts": {
     "lint": "tsc --noEmit --skipLibCheck && eslint '**/*.{ts,tsx}' --cache",

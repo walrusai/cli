@@ -14,9 +14,9 @@ describe('src/runner', () => {
       authToken = 'authToken';
 
       scope = nock('https://api.walrus.ai')
-        .post('/', { ...tests[0], options: { mode: 'poll' } })
+        .post('/', { ...tests[0], revision: 'revision', options: { mode: 'poll' } })
         .reply(200, { data: { gid: tests[0].gid, state: 'pending' } })
-        .post('/', { ...tests[1], options: { mode: 'poll' } })
+        .post('/', { ...tests[1], revision: 'revision', options: { mode: 'poll' } })
         .reply(200, { data: { gid: tests[1].gid, state: 'pending' } })
         .get(`/${tests[0].gid}`, {})
         .reply(200, { success: true, data: { video: `https://app.walrus.ai/integration-test/${tests[0].gid}` } })
@@ -25,7 +25,7 @@ describe('src/runner', () => {
     });
 
     it('should make requests and poll', async () => {
-      await runner.runTests(tests, authToken);
+      await runner.runTests(tests, authToken, 'revision');
 
       expect(scope.isDone()).toEqual(true);
     }, 10000);
