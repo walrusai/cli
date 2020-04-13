@@ -38,11 +38,12 @@ The quickest way to run a test with the walrus.ai CLI is by invoking the command
 | -n   | The name of the test                    |
 | -u   | The URL of the application to be tested |
 | -i   | The plain English instructions          |
+| -r   | The revision tag                        |
 
 A sample invocation looks something like this:
 
 ```bash
-walrus -n 'test-name' -u https://amazon.com -a YOUR_API_KEY -i \
+walrus -n 'test-name' -u https://amazon.com -a YOUR_API_KEY -r $COMMIT_ID -i \
   'Login' \
   'Add an item to your cart' \
   'Make sure the item is in your cart'
