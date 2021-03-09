@@ -32,7 +32,7 @@ const args = yargs
     }
 
     throw new Error(`
-      You must specify either:
+      You must specify only one of:
         - An inline name, url, and instructions
         - The path to a file or directory of test YML files
         - A list of test names already created in the Walrus dashboard
