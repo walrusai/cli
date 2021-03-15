@@ -1,0 +1,9 @@
+---
+name: Google Something
+url: 'https://google.com'
+variables:
+  query: 'Sandwich'
+instructions:
+  - "Search for :query:"
+  - "Hit enter"
+  - "Verify results load"

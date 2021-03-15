@@ -86,3 +86,13 @@ walrus -a YOUR_API_KEY -f test-case-1.yml
 
 walrus -a YOUR_API_KEY -f test-cases/
 ```
+
+### Running existing tests
+
+Sometimes, you may want to run tests in the walrus.ai dashboard from the command line, without storing and maintaining the yml files.
+
+You can call the walrus.ai CLI with a list of test model names:
+
+```bash
+walrus -a YOUR_API_KEY -n 'Test Name 1' 'Test Name 2'
+```
