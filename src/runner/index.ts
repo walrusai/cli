@@ -5,7 +5,7 @@ import logger from '../logger';
 
 const WALRUS_API = 'https://api.walrus.ai';
 const POLL_INTERVAL_MS = 5 * 1000;
-const TEST_TIMEOUT_MS = 60 * 60 * 1000;
+const TEST_TIMEOUT_MS = 5 * 60 * 60 * 1000;
 
 async function pollTest(test: WalrusTest, authToken: string): Promise<WalrusTestExecution> {
   return new Promise((resolve) => {
